@@ -1,14 +1,15 @@
-import Navbar from "./components/Navbar"
-import Sidebar from "./components/Sidebar"
+import Home from "./components/Home"
+// import Sidebar from "./components/Sidebar"
 
 function App() {
 
   return (
     <>
-      <Navbar />
-      <Sidebar />
-      {/* <Content /> */}
+      <div style={{ margin: "20px" }} >
+        <Home />
+      </div>
     </>
+
   )
 }
 

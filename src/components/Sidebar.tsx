@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 function Sidebar() {
     return (
-        <div>
+        <div className='sidebar'>
             Sidebar
         </div>
     )
