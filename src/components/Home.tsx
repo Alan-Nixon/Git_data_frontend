@@ -1,23 +1,27 @@
 import { memo, useState } from 'react'
 import { getRepoName } from '../functions/backendFunctions';
-import { repoType, userType } from '../functions/interface_types';
+import { intialType, repoType, userType } from '../functions/interface_types';
+import { useDispatch, useSelector } from 'react-redux';
+import RepoExplain from './RepoExplain';
+import { setUserRepo, setGitUserData } from '../redux/slice';
+import FollowersSection from './FollowersSection';
 
 
 function Home() {
     const [repoName, setRepoName] = useState("");
     const [error, setError] = useState("");
-    const [repo, setRepo] = useState<repoType[]>([])
-    const [searchedUser, setSearchedUser] = useState<userType | null>({
-        bio: "MERN developer", followers: 3, id: "136670282", nodeId: "U_kgDOCCVsSg", Name: "Alan Nixon",
-        profileImg: "https://avatars.githubusercontent.com/u/136670282?v=4", repoUrl: "https://github.com/Alan-Nixon"
-    })
+    const [selectedRepo, setSelectedRepo] = useState<repoType | null>(null)
+    const [followers, setFollowers] = useState<userType | null>(null)
+
+    const dispatch = useDispatch();
+    const userData = useSelector((state: { userData: intialType }) => state.userData)
 
     const submitRepoName = () => {
         if (repoName.trim() !== "") {
             getRepoName(repoName).then((data) => {
                 if (data.status) {
-                    setSearchedUser(data.data.userRepo)
-                    setRepo(data.data.repo ?? [])
+                    dispatch(setGitUserData(data.data.userRepo))
+                    dispatch(setUserRepo(data.data.repo))
                 } else {
                     setError(data.message ?? "Error occured while fetching data")
                 }
@@ -39,26 +43,30 @@ function Home() {
                 <button type='button' onClick={() => submitRepoName()} style={{ padding: "10px", marginLeft: "10px", color: "blue" }} >Search</button><br />
             </div>
 
-            {searchedUser && <>
+            {userData.gitUserData && <>
                 <div className="userCard">
-                    <img src={searchedUser.profileImg} className='profileImg' alt="" />
+                    <img src={userData.gitUserData.profileImg} className='profileImg' alt="" />
                     <div className="profileDetails">
-                        <p>Name : {searchedUser.Name}</p>
-                        <p>Bio : {searchedUser.bio}</p>
-                        <p>Follower Count : {searchedUser.followers}</p>
-                        <p>Total Repo count : {repo.length}</p>
-                        <p>Link to repositary : <span className='repoLink' onClick={()=>{
-                            window.open(searchedUser.repoUrl,"_blank")
-                        }} >{searchedUser.repoUrl}</span> </p>
+                        <p>Name : {userData.gitUserData.Name}</p>
+                        <p>Bio : {userData.gitUserData.bio}</p>
+                        <p>Follower Count : {userData.gitUserData.followers}</p>
+                        <p>Total Repo count : {userData.repo.length}</p>
+                        <p>
+                            Link to repositary : <span className='repoLink' onClick={() => {
+                                window.open(userData.gitUserData?.repoUrl, "_blank")
+                            }} >{userData.gitUserData.repoUrl}</span>
+                        </p>
+                        <p style={{ color: "#551A8B", cursor: "pointer" }} onClick={() => setFollowers(userData.gitUserData)} >Show Followers</p>
                     </div>
                 </div>
             </>}
 
+            {selectedRepo && <RepoExplain data={selectedRepo} setSelectedRepo={setSelectedRepo} />}
 
             <div className='cardContainer'>
-                {repo.length > 0 && repo.map((item, idx) => {
+                {userData.repo.length > 0 && userData.repo.map((item, idx) => {
                     return (
-                        <div className='cardStyle' key={idx}>
+                        <div className='cardStyle' key={idx} onClick={() => setSelectedRepo(item)} >
                             <p style={{ fontWeight: "bold" }} >{item.repoName}</p>
                             <p>created by : {item.ownerName}</p>
                             <p>{item.description} </p>
@@ -66,6 +74,8 @@ function Home() {
                     )
                 })}
             </div>
+
+            {followers && <FollowersSection owner={followers} />}
 
         </div>
     )

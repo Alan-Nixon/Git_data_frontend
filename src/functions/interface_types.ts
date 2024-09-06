@@ -10,11 +10,18 @@ export type repoType = {
 }
 
 export type userType = {
+    _id: string,
     Name: string,
     id: string,
     nodeId: string
     profileImg: string
     followers: number
     bio: string,
-    repoUrl: string
+    repoUrl: string,
+    mutual:boolean
+}
+
+export type intialType = {
+    gitUserData: userType | null
+    repo: repoType[] | []
 }

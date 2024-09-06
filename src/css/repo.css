@@ -1,0 +1,58 @@
+.repoParent {
+    padding: 15px;
+    color: white;
+    margin-top: 50px;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5%;
+}
+
+.cancelDiv {
+    margin-left: auto;
+}
+
+.descriptionGivenDiv {
+    margin-left: 50px;
+}
+
+.cancelButton {
+    color: white;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid white;
+    cursor: pointer;
+    margin: 25px;
+}
+
+.cancelButton:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
+}
+
+.followersSection {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.followerData {
+    margin-top: 30px;
+}
+
+.folowerImg {
+    border-radius: 100%;
+    width:75px;
+    margin-top:30px;
+    height: auto;
+}
+
+.descriptionFollowers { 
+    margin: 18px;
+}
+
+.mutualFriend {
+    margin: 50px
+}
