@@ -42,18 +42,19 @@ body {
 
 .cardContainer {
     display: flex;
-    margin-top: 5%;
+    margin-top: 3%;
     flex-wrap: wrap;
 }
 
 .cardStyle {
     margin-left: 20px;
-    width: 200px;
+    width: 280px;
+    color: white;
     margin-top: 10px;
     cursor: pointer;
     padding-left: 10px;
     padding-right: 10px;
-    background-color: #7a7979;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 .cardStyle:hover {
@@ -62,6 +63,7 @@ body {
 
 .profileImg {
     border-radius: 100%;
-    width: 250px;
+    width: 280px;
+    height: auto;
     opacity: 100%;
 }

@@ -1,6 +1,6 @@
 import { memo, useState } from 'react'
-import { getRepoName } from '../functions/backendFunctions';
-import { intialType, repoType, userType } from '../functions/interface_types';
+import { deleteRepoGit, editDetails, getRepoName } from '../functions/backendFunctions';
+import { editUserType, intialType, repoType, userType } from '../functions/interface_types';
 import { useDispatch, useSelector } from 'react-redux';
 import RepoExplain from './RepoExplain';
 import { setUserRepo, setGitUserData } from '../redux/slice';
@@ -8,13 +8,14 @@ import FollowersSection from './FollowersSection';
 
 
 function Home() {
+    const dispatch = useDispatch();
+    const userData = useSelector((state: { userData: intialType }) => state.userData)
+
     const [repoName, setRepoName] = useState("");
     const [error, setError] = useState("");
     const [selectedRepo, setSelectedRepo] = useState<repoType | null>(null)
     const [followers, setFollowers] = useState<userType | null>(null)
-
-    const dispatch = useDispatch();
-    const userData = useSelector((state: { userData: intialType }) => state.userData)
+    const [editUserData, setEditUserData] = useState<editUserType>({ _id: "", location: "", bio: "", blog: "" })
 
     const submitRepoName = () => {
         if (repoName.trim() !== "") {
@@ -22,6 +23,12 @@ function Home() {
                 if (data.status) {
                     dispatch(setGitUserData(data.data.userRepo))
                     dispatch(setUserRepo(data.data.repo))
+                    setEditUserData({
+                        _id: data.data.userRepo._id + "",
+                        location: data.data.userRepo.location + "",
+                        bio: data.data.userRepo.bio + "",
+                        blog: data.data.userRepo.blog + ""
+                    })
                 } else {
                     setError(data.message ?? "Error occured while fetching data")
                 }
@@ -29,6 +36,22 @@ function Home() {
         } else {
             setError("Please enter a valid repositary name")
         }
+    }
+
+    const deleteRepo = (userRepoId: string) => {
+        deleteRepoGit(userRepoId);
+        dispatch(setGitUserData(null))
+        dispatch(setUserRepo([]))
+        setFollowers(null)
+    }
+
+    const changeUserDetails = (key: string, value: string) => {
+        setEditUserData((rest) => ({ ...rest, [key]: value }))
+    }
+
+    const editUserDetails = async () => {
+        const { data } = await editDetails(editUserData)
+        dispatch(setGitUserData(data))
     }
 
     return (
@@ -56,7 +79,22 @@ function Home() {
                                 window.open(userData.gitUserData?.repoUrl, "_blank")
                             }} >{userData.gitUserData.repoUrl}</span>
                         </p>
-                        <p style={{ color: "#551A8B", cursor: "pointer" }} onClick={() => setFollowers(userData.gitUserData)} >Show Followers</p>
+                        <p style={{ color: "#551A8B", cursor: "pointer" }} onClick={() => {
+                            setFollowers(userData.gitUserData);
+                            setTimeout(() => window.scrollTo({
+                                top: document.body.scrollHeight,
+                                behavior: "smooth"
+                            }), 100)
+                        }} >Show Followers</p>
+                    </div>
+                    <div style={{ marginTop: "60px", color: "white", fontWeight: "bolder" }}>
+                        Location : <input type="text" onChange={(e) => changeUserDetails("location", e.target.value)} style={{ backgroundColor: "transparent", color: "white" }} defaultValue={userData.gitUserData.location} /><br />
+                        Bio : <input type="text" onChange={(e) => changeUserDetails("bio", e.target.value)} style={{ backgroundColor: "transparent", color: "white", marginTop: "10px" }} defaultValue={userData.gitUserData.bio} /><br />
+                        Blog : <input type="text" onChange={(e) => changeUserDetails("blog", e.target.value)} style={{ backgroundColor: "transparent", color: "white", marginTop: "10px" }} defaultValue={userData.gitUserData.blog} />
+                    </div>
+                    <div style={{ marginLeft: "auto", marginRight: "20px", marginTop: "20px" }}>
+                        <button className='editButton' onClick={() => editUserDetails()} >Edit User</button>
+                        <button className='deleteButton' onClick={() => deleteRepo(userData.gitUserData?._id + "")} >Delete This user</button>
                     </div>
                 </div>
             </>}
@@ -67,9 +105,19 @@ function Home() {
                 {userData.repo.length > 0 && userData.repo.map((item, idx) => {
                     return (
                         <div className='cardStyle' key={idx} onClick={() => setSelectedRepo(item)} >
-                            <p style={{ fontWeight: "bold" }} >{item.repoName}</p>
-                            <p>created by : {item.ownerName}</p>
-                            <p>{item.description} </p>
+                            <div style={{ display: "flex" }}>
+                                <div style={{ margin: "10px" }}>
+                                    <img src={userData?.gitUserData?.profileImg + ""} alt="" style={{ width: "75px", borderRadius: "100%" }} />
+                                </div>
+                                <div style={{ marginLeft: "10px" }}>
+                                    <div className="" style={{ display: "flex" }} >
+                                        <p style={{ fontWeight: "bold" }} >{item.repoName} </p>
+                                        <img style={{ width: "20px", height: "20px", marginTop: "15px", marginLeft: "5px" }} src="/check.png" alt="" />
+                                    </div>
+                                    <p>created by : {item.ownerName}</p>
+                                    <p>{item.description} </p>
+                                </div>
+                            </div>
                         </div>
                     )
                 })}

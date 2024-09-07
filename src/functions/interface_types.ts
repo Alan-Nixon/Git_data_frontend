@@ -18,10 +18,19 @@ export type userType = {
     followers: number
     bio: string,
     repoUrl: string,
-    mutual:boolean
+    mutual: boolean,
+    location: string,
+    blog: string
 }
 
 export type intialType = {
     gitUserData: userType | null
     repo: repoType[] | []
+}
+
+export type editUserType = {
+    _id: string,
+    location: string,
+    bio: string,
+    blog: string
 }

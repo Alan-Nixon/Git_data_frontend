@@ -44,15 +44,40 @@
 
 .folowerImg {
     border-radius: 100%;
-    width:75px;
-    margin-top:30px;
+    width: 75px;
+    margin-top: 30px;
     height: auto;
 }
 
-.descriptionFollowers { 
+.descriptionFollowers {
     margin: 18px;
 }
 
 .mutualFriend {
     margin: 50px
+}
+
+.deleteButton {
+    padding: 10px;
+    border: 1px solid red;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    transform: scale(1.1);
+}
+
+.editButton {
+    padding: 10px;
+    border: 1px solid blue;
+    background-color: transparent;
+    color: white;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.editButton:hover {
+    transform: scale(1.1);
 }
