@@ -34,3 +34,9 @@ export type editUserType = {
     bio: string,
     blog: string
 }
+
+export interface followersInterface {
+    owner: userType,
+    setGitUser: (repoName: string) => void
+    setName: (Name: string) => void
+}

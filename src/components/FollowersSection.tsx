@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
-import { intialType, userType } from "../functions/interface_types"
+import { followersInterface, intialType, userType } from "../functions/interface_types"
 import { getFollowersOfUser, isMutual } from "../functions/backendFunctions"
 import { useSelector } from "react-redux"
 
-function FollowersSection({ owner }: { owner: userType }) {
+
+function FollowersSection({ owner, setGitUser, setName }: followersInterface) {
 
     const userData = useSelector((state: { userData: intialType }) => state.userData)
     const [followers, setFollowers] = useState<userType[]>([]);
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         getFollowersOfUser(owner._id, owner.Name).then(async ({ data }) => {
@@ -18,10 +20,17 @@ function FollowersSection({ owner }: { owner: userType }) {
             ).then(({ data }) => {
                 setFollowers(foll.map((item: userType, index: number) => ({ ...item, mutual: data[index] })))
             })
+            setLoading(false)
         })
-    }, [])
+    }, [userData])
 
-    console.log(owner)
+    const selectFriend = (name: string) => {
+        setGitUser(name)
+        setName(name)
+    }
+
+    if (loading) { return (<div className="loading">Loading...</div>) }
+
     return (
         <div className="followersSection">
             <div>
@@ -30,10 +39,10 @@ function FollowersSection({ owner }: { owner: userType }) {
                 <span></span>
             </div>
             <div className="followerData">
-                {followers.length > 0 && followers.map(item => {
+                {followers.length > 0 && followers.map((item, index) => {
                     return (
-                        <div style={{ display: "flex" }}>
-                            <div className="">
+                        <div style={{ display: "flex", cursor: "pointer", border: "1px solid white" }} onClick={() => selectFriend(item.Name)} key={index}>
+                            <div style={{ marginLeft: "30px" }}>
                                 <img src={item.profileImg} className="folowerImg" alt="" />
                             </div>
                             <div className="descriptionFollowers">

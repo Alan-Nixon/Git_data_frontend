@@ -17,7 +17,7 @@ function Home() {
     const [followers, setFollowers] = useState<userType | null>(null)
     const [editUserData, setEditUserData] = useState<editUserType>({ _id: "", location: "", bio: "", blog: "" })
 
-    const submitRepoName = () => {
+    const submitRepoName = (repoName:string) => {
         if (repoName.trim() !== "") {
             getRepoName(repoName).then((data) => {
                 if (data.status) {
@@ -59,11 +59,11 @@ function Home() {
             <div className="topPortion">
                 <h2 className='heading'>Welcome to Git Hub data picker</h2>
                 {error && <p style={{ color: "red" }} >{error}</p>}
-                <input type="text" onChange={(e) => {
+                <input type="text" value={repoName} onChange={(e) => {
                     setRepoName(e.target.value + "");
                     setError("")
                 }} required placeholder='Enter repositary name' style={{ padding: "10px", width: "350px" }} />
-                <button type='button' onClick={() => submitRepoName()} style={{ padding: "10px", marginLeft: "10px", color: "blue" }} >Search</button><br />
+                <button type='button' onClick={() => submitRepoName(repoName)} style={{ padding: "10px", marginLeft: "10px", color: "blue" }} >Search</button><br />
             </div>
 
             {userData.gitUserData && <>
@@ -123,7 +123,7 @@ function Home() {
                 })}
             </div>
 
-            {followers && <FollowersSection owner={followers} />}
+            {followers && <FollowersSection owner={followers} setGitUser={submitRepoName} setName={setRepoName}  />}
 
         </div>
     )
